@@ -14,8 +14,8 @@ use App\Http\Controllers\ReferenciasController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/', [ReferenciasController::class, 'index'])->name('mapa');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
