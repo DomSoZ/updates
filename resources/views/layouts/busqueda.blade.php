@@ -13,7 +13,7 @@
         </form>
     </div>
 </div>
-@if($info->count())
+@if($ConsultarLc)
 <div class="card mx-auto rounded mt-3 pl-1" style="width:95%;">
     <table class="table">
         <thead>

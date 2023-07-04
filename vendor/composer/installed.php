@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'd0ed5874a4f9e6d2d037384dd1c1300ef62651a7',
+        'reference' => '608617c36cded912ae5982a92bd0bc4a532224a5',
         'name' => 'laravel/laravel',
         'dev' => true,
     ),
@@ -83,6 +83,15 @@
             'install_path' => __DIR__ . '/../dragonmantank/cron-expression',
             'aliases' => array(),
             'reference' => '782ca5968ab8b954773518e9e49a6f892a34b2a8',
+            'dev_requirement' => false,
+        ),
+        'econea/nusoap' => array(
+            'pretty_version' => 'v0.9.15',
+            'version' => '0.9.15.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../econea/nusoap',
+            'aliases' => array(),
+            'reference' => 'a5fd9cbbb0b83c94a099dadc8936ec7c2e1acfe1',
             'dev_requirement' => false,
         ),
         'egulias/email-validator' => array(
@@ -388,7 +397,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'd0ed5874a4f9e6d2d037384dd1c1300ef62651a7',
+            'reference' => '608617c36cded912ae5982a92bd0bc4a532224a5',
             'dev_requirement' => false,
         ),
         'laravel/pint' => array(
