@@ -14,7 +14,7 @@ use App\Http\Controllers\ReferenciasController;
 |
 */
 
-Route::get('/', [ReferenciasController::class, 'index'])->name('index');
+Route::get('/', [ReferenciasController::class, 'index'])->name('busqueda');
 
 Auth::routes();
 
