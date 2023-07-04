@@ -14,7 +14,7 @@ use App\Http\Controllers\ReferenciasController;
 |
 */
 
-Route::get('/', [ReferenciasController::class, 'index'])->name('mapa');
+Route::get('/', [ReferenciasController::class, 'index'])->name('index');
 
 Auth::routes();
 
