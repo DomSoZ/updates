@@ -14,4 +14,11 @@ class ReferenciasController extends Controller
     public function index(){
         return view('layouts/busqueda');
     }
+
+    public function Buscarlc(Request $request){
+
+        $LineaCaptura =$request->input('lineacaptura') ;
+       dd($LineaCaptura);
+    }
+
 }
