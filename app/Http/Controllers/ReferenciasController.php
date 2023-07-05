@@ -21,25 +21,26 @@ class ReferenciasController extends Controller
         // dd($linea_captura);
         if ($linea_captura == null) {
             // mamadas del maicra
-            $info=DB::table('users')->where('name', '=', $linea_captura)->get();
-            return view('layouts/busqueda', ['ConsultarLc' => $info]);
+            $info=DB::table('users')->where('id', '=', $linea_captura)->get();
+            // dd($info);
+            return view('layouts/busqueda', ['consultarLc' => [], 'resultados' => []]);
         }else{
             // CONSULTA A BD PAGOS
-            $ConsultarLc=  \DB::connection('mysqlbanc2')->select("select * from  pagos p   WHERE linea_captura = ? ; ", [$linea_captura]);
+            $ConsultarLc=  \DB::connection('mysqlbanc2')->select("select * from  pagos p   WHERE numero_orden = ? ; ", [$linea_captura]);
             // dd( $ConsultarLc);
           
               $result=  $this->ConsumoWSDLValidarlc($linea_captura);
             //    dd($result);
 
                $resultdos=  $this->ConsumoWSDLConsultaRecibo($linea_captura, $result['MONTO']);
-                dd($resultdos);
+                // dd($resultdos);
             
             //  dd($result);
             // dd($result['MONTO']);
 
 
 
-            return view('layouts/busqueda', ['ConsultarLc' => $ConsultarLc]);
+            return view('layouts/busqueda', ['consultarLc' => $ConsultarLc, 'resultados' => $resultdos]);
         }
     }
 
@@ -50,7 +51,7 @@ class ReferenciasController extends Controller
         $password=env("PASSWORD_SAP");
         $parametros=array(["TpUsuario"=> 2, "TpConsulta"=> 3 , "FolioConsulta"=>  $linea_captura, "Importe"=>   $monto ]);
         $funcion= "SI_ConsultaRecibo_PI_Sender";
-       return  $result = $this->soap_cliente($service,$username,$password,$funcion,$parametros);
+       return  $result = $this->soap_client($service,$username,$password,$funcion,$parametros);
      
     }
 
@@ -65,30 +66,6 @@ class ReferenciasController extends Controller
     }
 
     private function soap_client($service,$username,$password,$funcion,$parametros)
-    {
-    try {
-        $soapclient = new \nusoap_client($service, true);
-        $soapclient->setCredentials($username, $password, 'basic');
-        $soapclient->decode_utf8 = false;
-        $soapclient->timeout = 10;
-        $soapclient->response_timeout = 10;
-        $result = $soapclient->call($funcion, $parametros);
-        if ($sError = $soapclient->getError()) {
-          return response()->json(array("mensaje" => "Error al consumir servicio".$sError), 500);
-          
-          }
-        if ($soapclient->fault) {
-            return array("mensaje" => "Error al consumir servicio");
-        }
-        // return response()->json( $result,200);;
-        return $result;
-
-        }catch(Exception $e){
-            return array("mensaje" => "Error al consumir servicio");
-        }
-    } 
-
-    private function soap_cliente($service,$username,$password,$funcion,$parametros)
     {
     try {
         $soapclient = new \nusoap_client($service, true);

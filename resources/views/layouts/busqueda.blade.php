@@ -13,36 +13,40 @@
         </form>
     </div>
 </div>
-@if($ConsultarLc)
 <div class="card mx-auto rounded mt-3 pl-1" style="width:95%;">
-    <table class="table">
+    <table class="table table-striped-columns">
         <thead>
             <tr>
                 <th>Sistema</th>
-                <th>Referencia</th>
-                <th>RFC</th>
+                <th>Orden</th>
                 <th>Monto</th>
-                <th>Fecha de venc.</th>
-                <th>metdo de pago</th>
-                <th>fecha de pago</th>
-                <th>Banco</th>
-                <th>Convenio</th>
+                <th>Forma de pago</th>
             </tr>
         </thead>
         <tbody>
+            @if($resultados)
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>SAP</td>
+                <td>{{$resultados['TB_ConsultaRecibo']['Folio']}}</td>
+                <td>{{$resultados['TB_ConsultaRecibo']['Total']}}</td>
+                <td>{{$resultados['TB_ConsultaRecibo']['FormaPago']}}</td>
             </tr>
+            @endif
         </tbody>
     </table>
 </div>
+@if($consultarLc)
+    @if($consultarLc[0]->estado)
+        <form action="" method="get">
+            <button type="submit">Update</button>
+        </form>
+    @endif
+@else
+    @if($resultados)
+        <form action="" method="post">
+            <button type="submit">Insertar</button>
+        </form>
+    @endif
 @endif
+
 @endsection
