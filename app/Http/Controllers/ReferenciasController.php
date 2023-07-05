@@ -30,12 +30,33 @@ class ReferenciasController extends Controller
             // dd( $ConsultarLc);
           
               $result=  $this->ConsumoWSDLValidarlc($linea_captura);
-            //    dd($result);
+               // dd($result);
+            //    dd( $result);
 
-               $resultdos=  $this->ConsumoWSDLConsultaRecibo($linea_captura, $result['MONTO']);
-                // dd($resultdos);
+            //   if ( $result['ES_MSJ']['V1_MENS'] == 'No existe documento de compensación'){
+
+            //     return view('layouts/busqueda', ['consultarLc' => [], 'resultados' => []]);
+
+            //   }
+               
+
+               $resultdos=  $this->ConsumoWSDLConsultaRecibo($linea_captura,  $result['ES_ORDEN_PAGO']['IMPORTE']);
+                //  dd($resultdos);
             
-            //  dd($result);
+
+               $datos_update= array(
+                    "FOMA_PAGO" => $resultdos['TB_ConsultaRecibo']['FormaPago'],
+                    "RFC" => $result['ES_ORDEN_PAGO']['RFC'],
+                    "METODO_PAGO"=>$resultdos['TB_ConsultaRecibo']['MetodoPago'],
+                    "NUMERO_OPERACION"=> '00',
+                    "BANCO"=> '',
+                    "MONTO_PAGADO"=> $resultdos['TB_ConsultaRecibo']['Total'],
+                    "FECHA_PAGO"=> '',
+                    "NUMERO_ORDEN"=> $linea_captura,
+                    "ESTADO"=> 'P'
+                );
+            
+             //dd($G);
             // dd($result['MONTO']);
 
 
@@ -56,12 +77,26 @@ class ReferenciasController extends Controller
     }
 
     private function ConsumoWSDLValidarlc($linea_captura){
+
+
         $service=env("SERV_VALIDA_LC");
         $username=env("USER_SAP_VALIDA_LC");
         $password=env("PASSWORD_SAP_VALIDA_LC");
-        $parametros=array(["TP_FOLIO"=> 2, "FOLIO"=> $linea_captura  ]);
-        $funcion= "SI_ValidarLinCaptura_PI_Sender";
+        $parametros=array(["NRO_ORD_PAGO" => $linea_captura, "NRO_DECLARACION"=>"", "TP_CONSULTA"=>"1" ]);
+        $funcion= "SI_BuscarDetalleLineaCaptura_PI_Sender";
        return  $result = $this->soap_client($service,$username,$password,$funcion,$parametros);
+     
+    }
+
+    private function ConsumoWSDLAltalc($linea_captura){
+
+
+    //     $service=env("SERV_VALIDA_LC");
+    //     $username=env("USER_SAP_VALIDA_LC");
+    //     $password=env("PASSWORD_SAP_VALIDA_LC");
+    //     $parametros=array(["TP_FOLIO"=> 2, "FOLIO"=> $linea_captura  ]);
+    //     $funcion= "SI_ValidarLinCaptura_PI_Sender";
+    //    return  $result = $this->soap_client($service,$username,$password,$funcion,$parametros);
      
     }
 
