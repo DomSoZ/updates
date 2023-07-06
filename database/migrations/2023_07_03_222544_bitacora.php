@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('id_usuario');
             $table->string('linea_captura');
             $table->string('accion');
-            $table->dateTime('fecha');
+            $table->timestamps();
         });
 
     }

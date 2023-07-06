@@ -47,7 +47,7 @@
     </table>
 </div>
 @if($consultarLc)
-    @if($consultarLc[0]->estado)
+    @if($consultarLc[0]->estado != 'P')
         <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button>
     @endif
 @else

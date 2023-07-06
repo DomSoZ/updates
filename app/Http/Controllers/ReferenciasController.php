@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use DateTime;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Bitacora;
+use Illuminate\Support\Facades\Auth;
 
 class ReferenciasController extends Controller
 {
@@ -30,8 +33,9 @@ class ReferenciasController extends Controller
             // dd( $ConsultarLc);
           
               $result=  $this->ConsumoWSDLValidarlc($linea_captura);
-               // dd($result);
-            //    dd( $result);
+          dd($result['ES_ORDEN_PAGO']['LINEA_CAPTURA']);
+            
+                
 
             //   if ( $result['ES_MSJ']['V1_MENS'] == 'No existe documento de compensación'){
 
@@ -49,9 +53,13 @@ class ReferenciasController extends Controller
                     $metodopago = "";
                     $formapago = "" ;
                     $monto_pagado ="";
+                    $FECHA_VENCE="";
+                    $inea_cap="";
     
                 }else{
                     $estado = "P";
+                    $FECHA_VENCE= date("Y-m-d", strtotime($result['ES_ORDEN_PAGO']['FECHA_VENCIMIENTO']));
+                    $inea_cap= $result['ES_ORDEN_PAGO']['LINEA_CAPTURA'];
                     $metodopago = $resultdos['TB_ConsultaRecibo']['MetodoPago'] ?? 00;
                     $formapago = $resultdos['TB_ConsultaRecibo']['FormaPago'] ;
                     $monto_pagado = $resultdos['TB_ConsultaRecibo']['Total'] ?? 00;
@@ -66,7 +74,9 @@ class ReferenciasController extends Controller
                     "MONTO_PAGADO"=>$monto_pagado ,
                     "FECHA_PAGO"=> '',
                     "NUMERO_ORDEN"=> $linea_captura,
-                    "ESTADO"=> $estado
+                    "ESTADO"=> $estado,
+                    "FECHA_VENCE"=>$FECHA_VENCE,
+                    "LINEA_CAPTURA"=> $inea_cap
                 );
 
                 $Bancos=  \DB::connection('mysqlbanc2')->select("select id_banco, banco from  c_bancos cb  ;");
@@ -103,15 +113,24 @@ class ReferenciasController extends Controller
      
     }
 
-    private function ConsumoWSDLAltalc($linea_captura){
+
+    public function Insertlc(Request $request ){
+dd($request );
+        $this-> ConsumoWSDLAltalc();
+     
+         
+     }
 
 
-    //     $service=env("SERV_VALIDA_LC");
-    //     $username=env("USER_SAP_VALIDA_LC");
-    //     $password=env("PASSWORD_SAP_VALIDA_LC");
-    //     $parametros=array(["TP_FOLIO"=> 2, "FOLIO"=> $linea_captura  ]);
-    //     $funcion= "SI_ValidarLinCaptura_PI_Sender";
-    //    return  $result = $this->soap_client($service,$username,$password,$funcion,$parametros);
+    private function ConsumoWSDLAltalc($linea_captura, $RFC, $FECHA_VENCE, $MONTO, $NUMERO_ORDEN ){
+
+
+    $service=env("SERV_ALTA");
+    $username=env("USER_SAP_ALTA");
+    $password=env("PASSWORD_SAP_ALTA");
+    $parametros=array(["referencia"=> $linea_captura, "rfc"=> $RFC  , "fechaVencimiento"=> $FECHA_VENCE , "monto"=> $MONTO, "numeroOrden"=> $NUMERO_ORDEN, "engomado"=> "" ]);
+   $funcion= "alta";
+       return  $result = $this->soap_client($service,$username,$password,$funcion,$parametros);
      
     }
 
@@ -139,7 +158,35 @@ class ReferenciasController extends Controller
         }
     } 
 
+    
     public function update(Request $request){
-        dd($request);
-    }
+    // dd($this->getToday());
+     $FORMA_PAGO = $request['FORMA_PAGO']; $RFC = $request['RFC']; $METODO_PAGO = $request['METODO_PAGO'];
+     $NUMERO_OPERACION = $request['NUMERO_OPERACION']; $MONTO_PAGADO = $request['MONTO_PAGADO'];
+     $FECHA_PAGO = $request['FECHA_PAGO']; $NUMERO_ORDEN = $request['NUMERO_ORDEN']; $ESTADO = $request['ESTADO']; $BANCO=['BANCO'] ;$CONVENIO=['CONVENIO']; 
+    
+    $date=date_create( $FECHA_PAGO);
+    $FECHA_PAGO = date_format($date,"Y-m-d H:i:s");
+  
+    dd($FECHA_PAGO);
+
+    //   $UPDATE =  \DB::connection('mysqlbanc2')->select(" update pagos set pagos.estado= ?, pagos.id_forma_pago=? , pagos.metodo_pago=?, pagos.numero_operacion=?, 
+    //                                                      pagos.rfc=?,  pagos.banco= ? , pagos.id_convenio = ?, pagos.monto_pagado=?	, pagos.fecha_pago= ? 
+    //                                                      where pagos.numero_orden =?; ", [$ESTADO, $FORMA_PAGO, $METODO_PAGO, $NUMERO_OPERACION, $RFC, $BANCO, $MONTO_PAGADO,$FECHA_PAGO, $NUMERO_ORDEN ]);
+
+    Bitacora::create([
+        'id_usuario' =>  Auth::user()->id,
+        'linea_captura' =>  $NUMERO_ORDEN, 
+        'accion' =>  "UPDATE"
+    ]);
+
+    return view('layouts/busqueda', ['consultarLc' => [], 'datos_update' => []]);
+}
+
+
+// Private function getToday(){
+//     date_default_timezone_set("America/Mexico_City");
+//     return date("Y-m-d\TH:i:s");
+// }
+
 }
