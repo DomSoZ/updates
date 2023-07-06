@@ -56,7 +56,7 @@
             <input type="text" name="LINEA_CAPTURA" id="LINEA_CAPTURA" value="{{$datos_update['LINEA_CAPTURA']}}" disabled/>
             <input type="text" name="RFC" id="RFC" value="{{$datos_update['RFC']}}" disabled/>
             <input type="text" name="FECHA_VENCE" id="FECHA_VENCE" value="{{$datos_update['FECHA_VENCE']}}" disabled/>
-            <input type="text" name="MONTO" id="MONTO" value="{{$datos_update['MONTO']}}" disabled/>
+            <input type="text" name="MONTO" id="MONTO" value="{{$datos_update['MONTO_PAGADO']}}" disabled/>
             <input type="text" name="NUMERO_ORDEN" id="NUMERO_ORDEN" value="{{$datos_update['NUMERO_ORDEN']}}" disabled/>
             <button type="submit">Insertar</button>
         </form>

@@ -45,10 +45,31 @@ class ReferenciasController extends Controller
                
 
                $resultdos=  $this->ConsumoWSDLConsultaRecibo($linea_captura,  $result['ES_ORDEN_PAGO']['IMPORTE']);
-                //  dd($resultdos);
+
+            //    $numero_resultdos = sizeof($resultdos);
+                //  dd(  $resultdos);
+
+                 if(count( $resultdos['TB_ConsultaRecibo']) <= 5){
+
+                    $paraif= $resultdos['TB_ConsultaRecibo'][0]['ES_MENSAJES']['TpMens'];
+                    $estado = "P";
+                    $FECHA_VENCE= date("Y-m-d", strtotime($result['ES_ORDEN_PAGO']['FECHA_VENCIMIENTO']));
+                    $inea_cap= $result['ES_ORDEN_PAGO']['LINEA_CAPTURA'];
+                    $metodopago = $resultdos['TB_ConsultaRecibo'][0]['MetodoPago'] ?? 00;
+                    $formapago = $resultdos['TB_ConsultaRecibo'][0]['FormaPago'] ;
+                    $monto_pagado = $resultdos['TB_ConsultaRecibo'][0]['Total'] ?? 00;
+                 }else{
+                     $paraif= $resultdos['TB_ConsultaRecibo']['ES_MENSAJES']['TpMens'] ;
+                     $estado = "P";
+                     $FECHA_VENCE= date("Y-m-d", strtotime($result['ES_ORDEN_PAGO']['FECHA_VENCIMIENTO']));
+                     $inea_cap= $result['ES_ORDEN_PAGO']['LINEA_CAPTURA'];
+                     $metodopago = $resultdos['TB_ConsultaRecibo']['MetodoPago'] ?? 00;
+                     $formapago = $resultdos['TB_ConsultaRecibo']['FormaPago'] ;
+                     $monto_pagado = $resultdos['TB_ConsultaRecibo']['Total'] ?? 00;
+                 }
             
 
-                if ($resultdos['TB_ConsultaRecibo']['ES_MENSAJES']['TpMens'] == "E"){
+                if (  $paraif == "E"){
                     $estado = "I";
                     $metodopago = "";
                     $formapago = "" ;
@@ -56,13 +77,6 @@ class ReferenciasController extends Controller
                     $FECHA_VENCE="";
                     $inea_cap="";
     
-                }else{
-                    $estado = "P";
-                    $FECHA_VENCE= date("Y-m-d", strtotime($result['ES_ORDEN_PAGO']['FECHA_VENCIMIENTO']));
-                    $inea_cap= $result['ES_ORDEN_PAGO']['LINEA_CAPTURA'];
-                    $metodopago = $resultdos['TB_ConsultaRecibo']['MetodoPago'] ?? 00;
-                    $formapago = $resultdos['TB_ConsultaRecibo']['FormaPago'] ;
-                    $monto_pagado = $resultdos['TB_ConsultaRecibo']['Total'] ?? 00;
                 }
 
                 $datos_update= array(
