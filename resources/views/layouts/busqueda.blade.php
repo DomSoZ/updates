@@ -8,7 +8,7 @@
     <div class="card-body">
         <form action="{{ route('busqueda') }}" class="d-flex" role="search">
             <input name="lineacaptura" class="form-control me-2" type="search" placeholder="Numero de Orden"
-                aria-label="Search" required>
+                pattern="[0-9]{12}" required>
             <button class="btn btn-outline-success" type="submit">Buscar</button>
         </form>
     </div>
@@ -52,7 +52,12 @@
     @endif
 @else
     @if($datos_update)
-        <form action="" method="post">
+        <form action="{{ route('insert') }}" method="post">
+            <input type="text" name="LINEA_CAPTURA" id="LINEA_CAPTURA" value="{{$datos_update['LINEA_CAPTURA']}}" disabled/>
+            <input type="text" name="RFC" id="RFC" value="{{$datos_update['RFC']}}" disabled/>
+            <input type="text" name="FECHA_VENCE" id="FECHA_VENCE" value="{{$datos_update['FECHA_VENCE']}}" disabled/>
+            <input type="text" name="MONTO" id="MONTO" value="{{$datos_update['MONTO']}}" disabled/>
+            <input type="text" name="NUMERO_ORDEN" id="NUMERO_ORDEN" value="{{$datos_update['NUMERO_ORDEN']}}" disabled/>
             <button type="submit">Insertar</button>
         </form>
     @endif
