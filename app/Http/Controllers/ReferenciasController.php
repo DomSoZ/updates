@@ -129,23 +129,23 @@ class ReferenciasController extends Controller
 
 
     public function Insertlc(Request $request ){
-        dd($request );
-        $this-> ConsumoWSDLAltalc();
-     
+        // dd($request->linea);
+        $this-> ConsumoWSDLAltalc($request->linea, $request->rfc, $request->fecha_ven, $request->monto, $request->numero_ord);
+        return view('layouts/busqueda', ['consultarLc' => [], 'datos_update' => []]);
          
      }
 
 
     private function ConsumoWSDLAltalc($linea_captura, $RFC, $FECHA_VENCE, $MONTO, $NUMERO_ORDEN ){
 
-
     $service=env("SERV_ALTA");
     $username=env("USER_SAP_ALTA");
     $password=env("PASSWORD_SAP_ALTA");
     $parametros=array(["referencia"=> $linea_captura, "rfc"=> $RFC  , "fechaVencimiento"=> $FECHA_VENCE , "monto"=> $MONTO, "numeroOrden"=> $NUMERO_ORDEN, "engomado"=> "" ]);
-   $funcion= "alta";
-       return  $result = $this->soap_client($service,$username,$password,$funcion,$parametros);
-     
+    $funcion= "alta";
+    
+      $result = $this->soap_client($service,$username,$password,$funcion,$parametros);
+        dd($result);
     }
 
     private function soap_client($service,$username,$password,$funcion,$parametros)
