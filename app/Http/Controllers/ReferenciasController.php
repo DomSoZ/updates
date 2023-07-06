@@ -33,7 +33,7 @@ class ReferenciasController extends Controller
             // dd( $ConsultarLc);
           
               $result=  $this->ConsumoWSDLValidarlc($linea_captura);
-          dd($result['ES_ORDEN_PAGO']['LINEA_CAPTURA']);
+        //   dd($result['ES_ORDEN_PAGO']['LINEA_CAPTURA']);
             
                 
 
@@ -115,7 +115,7 @@ class ReferenciasController extends Controller
 
 
     public function Insertlc(Request $request ){
-dd($request );
+        dd($request );
         $this-> ConsumoWSDLAltalc();
      
          
