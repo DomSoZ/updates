@@ -91,7 +91,7 @@
             <div class="row">
                 <div class="form-group col mb-3">
                     <label>Banco: </label>
-                    <select class="form-select" aria-label="Default select example">
+                    <select class="form-select" name="BANCO" id="BANCO" aria-label="Default select example">
                         @foreach ($bancos as $banco)
                             <option value="{{$banco->banco}}">{{$banco->banco}}</option>
                         @endforeach
@@ -99,7 +99,7 @@
                 </div>
                 <div class="form-group col mb-3">
                     <label>Banco: </label>
-                    <select class="form-select" aria-label="Default select example">
+                    <select class="form-select" name="CONVENIO" id="CONVENIO" aria-label="Default select example">
                         @foreach ($convenios as $convenio)
                             <option value="{{$convenio->id_convenio}}">{{$convenio->cuenta_contable}}-{{$convenio->via_pago}}</option>
                         @endforeach
