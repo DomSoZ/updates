@@ -53,11 +53,12 @@
 @else
     @if($datos_update)
         <form action="{{ route('insert') }}" method="post">
-            <input type="text" name="LINEA_CAPTURA" id="LINEA_CAPTURA" value="{{$datos_update['LINEA_CAPTURA']}}" disabled/>
-            <input type="text" name="RFC" id="RFC" value="{{$datos_update['RFC']}}" disabled/>
-            <input type="text" name="FECHA_VENCE" id="FECHA_VENCE" value="{{$datos_update['FECHA_VENCE']}}" disabled/>
-            <input type="text" name="MONTO" id="MONTO" value="{{$datos_update['MONTO_PAGADO']}}" disabled/>
-            <input type="text" name="NUMERO_ORDEN" id="NUMERO_ORDEN" value="{{$datos_update['NUMERO_ORDEN']}}" disabled/>
+            @csrf
+            <input type="text" name="linea" id="linea" value="{{$datos_update['LINEA_CAPTURA']}}" hidden/>
+            <input type="text" name="rfc" id="rfc" value="{{$datos_update['RFC']}}" hidden/>
+            <input type="text" name="fecha_ven" id="fecha_ven" value="{{$datos_update['FECHA_VENCE']}}" hidden/>
+            <input type="text" name="monto" id="numero_ord" value="{{$datos_update['MONTO_PAGADO']}}" hidden/>
+            <input type="text" name="numero_ord" id="numero_ord" value="{{$datos_update['NUMERO_ORDEN']}}" hidden/>
             <button type="submit">Insertar</button>
         </form>
     @endif
