@@ -23,7 +23,7 @@ class ReferenciasController extends Controller
             // mamadas del maicra
             $info=DB::table('users')->where('id', '=', $linea_captura)->get();
             // dd($info);
-            return view('layouts/busqueda', ['consultarLc' => [], 'resultados' => []]);
+            return view('layouts/busqueda', ['consultarLc' => [], 'datos_update' => []]);
         }else{
             // CONSULTA A BD PAGOS
             $ConsultarLc=  \DB::connection('mysqlbanc2')->select("select * from  pagos p   WHERE numero_orden = ? ; ", [$linea_captura]);
@@ -44,24 +44,39 @@ class ReferenciasController extends Controller
                 //  dd($resultdos);
             
 
-               $datos_update= array(
-                    "FOMA_PAGO" => $resultdos['TB_ConsultaRecibo']['FormaPago'],
+                if ($resultdos['TB_ConsultaRecibo']['ES_MENSAJES']['TpMens'] == "E"){
+                    $estado = "I";
+                    $metodopago = "";
+                    $formapago = "" ;
+                    $monto_pagado ="";
+    
+                }else{
+                    $estado = "P";
+                    $metodopago = $resultdos['TB_ConsultaRecibo']['MetodoPago'] ?? 00;
+                    $formapago = $resultdos['TB_ConsultaRecibo']['FormaPago'] ;
+                    $monto_pagado = $resultdos['TB_ConsultaRecibo']['Total'] ?? 00;
+                }
+
+                $datos_update= array(
+                    "FORMA_PAGO" => $formapago ,
                     "RFC" => $result['ES_ORDEN_PAGO']['RFC'],
-                    "METODO_PAGO"=>$resultdos['TB_ConsultaRecibo']['MetodoPago'],
+                    "METODO_PAGO"=>$metodopago,
                     "NUMERO_OPERACION"=> '00',
                     "BANCO"=> '',
-                    "MONTO_PAGADO"=> $resultdos['TB_ConsultaRecibo']['Total'],
+                    "MONTO_PAGADO"=>$monto_pagado ,
                     "FECHA_PAGO"=> '',
                     "NUMERO_ORDEN"=> $linea_captura,
-                    "ESTADO"=> 'P'
+                    "ESTADO"=> $estado
                 );
-            
+
+                $Bancos=  \DB::connection('mysqlbanc2')->select("select id_banco, banco from  c_bancos cb  ;");
+                $convenios=  \DB::connection('mysqlbanc2')->select("  select id_convenio, cuenta_contable , via_pago   from  c_convenios cc ; ");
              //dd($G);
             // dd($result['MONTO']);
 
 
 
-            return view('layouts/busqueda', ['consultarLc' => $ConsultarLc, 'resultados' => $resultdos]);
+            return view('layouts/busqueda', ['consultarLc' => $ConsultarLc, 'datos_update' => $datos_update,'bancos' =>$Bancos, 'convenios' => $convenios]);
         }
     }
 
@@ -124,4 +139,7 @@ class ReferenciasController extends Controller
         }
     } 
 
+    public function update(Request $request){
+        dd($request);
+    }
 }
