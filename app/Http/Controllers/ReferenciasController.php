@@ -137,15 +137,29 @@ class ReferenciasController extends Controller
 
 
     private function ConsumoWSDLAltalc($linea_captura, $RFC, $FECHA_VENCE, $MONTO, $NUMERO_ORDEN ){
-
+$ff=substr($MONTO, 0, -3);
+// dd($ff);
     $service=env("SERV_ALTA");
     $username=env("USER_SAP_ALTA");
     $password=env("PASSWORD_SAP_ALTA");
-    $parametros=array(["referencia"=> $linea_captura, "rfc"=> $RFC  , "fechaVencimiento"=> $FECHA_VENCE , "monto"=> $MONTO, "numeroOrden"=> $NUMERO_ORDEN, "engomado"=> "" ]);
-    $funcion= "alta";
+    // dd(  $service,$username, $password );
+
+    $datos_entrada = array("alta"=>array(
+        "referencia"=>$linea_captura,
+        "rfc"=>$RFC,
+        "fechaVencimiento"=>$FECHA_VENCE,
+        "monto"=>$ff,
+        "numeroOrden"=>$NUMERO_ORDEN,
+        "engomado"=> " "
+    ));
     
-      $result = $this->soap_client($service,$username,$password,$funcion,$parametros);
-        dd($result);
+     $parametros=array(["referencia"=> $linea_captura, "rfc"=> $RFC  , "fechaVencimiento"=> $FECHA_VENCE , "monto"=> $ff, "numeroOrden"=> $NUMERO_ORDEN, "engomado"=> " " ]);
+
+    $funcion= "alta";
+    // dd($parametros,   $datos_entrada);
+    
+      $result = $this->soap_client($service,$username,$password,$funcion, $parametros);
+    dd( $result );
     }
 
     private function soap_client($service,$username,$password,$funcion,$parametros)
@@ -174,20 +188,23 @@ class ReferenciasController extends Controller
 
     
     public function update(Request $request){
-    // dd($this->getToday());
+    //   dd($request);
      $FORMA_PAGO = $request['FORMA_PAGO']; $RFC = $request['RFC']; $METODO_PAGO = $request['METODO_PAGO'];
-     $NUMERO_OPERACION = $request['NUMERO_OPERACION']; $MONTO_PAGADO = $request['MONTO_PAGADO'];
-     $FECHA_PAGO = $request['FECHA_PAGO']; $NUMERO_ORDEN = $request['NUMERO_ORDEN']; $ESTADO = $request['ESTADO']; $BANCO=['BANCO'] ;$CONVENIO=['CONVENIO']; 
+     $NUMERO_OPERACION = $request['NUMERO_OPERACION']; $MONTO_PAGADO = substr($request['MONTO_PAGADO'], 0, -3); ;
+     $FECHA_PAGO = $request['FECHA_PAGO']; $NUMERO_ORDEN = $request['NUMERO_ORDEN']; $ESTADO = $request['ESTADO']; $BANCO= $request['BANCO'] ;$CONVENIO= $request['CONVENIO']; 
     
     $date=date_create( $FECHA_PAGO);
     $FECHA_PAGO = date_format($date,"Y-m-d H:i:s");
   
-    dd($FECHA_PAGO);
+    //  dd($ESTADO, $FORMA_PAGO, $METODO_PAGO, $NUMERO_OPERACION, $RFC, $BANCO, $CONVENIO, $MONTO_PAGADO, $FECHA_PAGO, $NUMERO_ORDEN);
 
-    //   $UPDATE =  \DB::connection('mysqlbanc2')->select(" update pagos set pagos.estado= ?, pagos.id_forma_pago=? , pagos.metodo_pago=?, pagos.numero_operacion=?, 
-    //                                                      pagos.rfc=?,  pagos.banco= ? , pagos.id_convenio = ?, pagos.monto_pagado=?	, pagos.fecha_pago= ? 
-    //                                                      where pagos.numero_orden =?; ", [$ESTADO, $FORMA_PAGO, $METODO_PAGO, $NUMERO_OPERACION, $RFC, $BANCO, $MONTO_PAGADO,$FECHA_PAGO, $NUMERO_ORDEN ]);
+      $UPDATE =  \DB::connection('mysqlbanc2')->update(' update pagos set pagos.estado= ? , pagos.id_forma_pago= ? , pagos.metodo_pago= ? , pagos.numero_operacion= ? , pagos.rfc= ? ,  pagos.banco= ? , pagos.id_convenio = ? , pagos.monto_pagado= ? , pagos.fecha_pago= ?  where pagos.numero_orden =? ', [$ESTADO, $FORMA_PAGO, $METODO_PAGO, $NUMERO_OPERACION, $RFC, $BANCO, $CONVENIO, $MONTO_PAGADO, $FECHA_PAGO, $NUMERO_ORDEN ]);
 
+
+    // $UPDATE =   \DB::connection('mysqlbanc2')->update('update pagos set pagos.metodo_pago= ? where pagos.numero_orden = ?', [ "EUP" , 300080950408]);
+    // dd($UPDATE);
+   
+    // dd($UPDATE ) ;
     Bitacora::create([
         'id_usuario' =>  Auth::user()->id,
         'linea_captura' =>  $NUMERO_ORDEN, 
