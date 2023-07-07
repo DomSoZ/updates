@@ -17,7 +17,6 @@ class ReferenciasController extends Controller
     }
 
     
-
     
     public function index(Request $request){
         $linea_captura = $request->input('lineacaptura') ?? 00;
@@ -34,12 +33,6 @@ class ReferenciasController extends Controller
           
               $result=  $this->ConsumoWSDLValidarlc($linea_captura);
         //    dd($result);
-            
-  
-
-
-
-
 
 
                 // validacion fea (acomodar)
@@ -128,17 +121,13 @@ class ReferenciasController extends Controller
 
                 $Bancos=  \DB::connection('mysqlbanc2')->select("select id_banco, banco from  c_bancos cb  ;");
                 $convenios=  \DB::connection('mysqlbanc2')->select("  select id_convenio, cuenta_contable , via_pago   from  c_convenios cc ; ");
-             //dd($G);
             // dd($result['MONTO']);
-
-
 
             return view('layouts/busqueda', ['consultarLc' => $ConsultarLc, 'datos_update' => $datos_update,'bancos' =>$Bancos, 'convenios' => $convenios]);
         }
     }
 
     private function ConsumoWSDLConsultaRecibo($linea_captura, $monto){
-
         $service=env("SERV_CONSULTA_RECIBO_FACT");
         $username=env("USER_SAP");
         $password=env("PASSWORD_SAP");
@@ -149,8 +138,6 @@ class ReferenciasController extends Controller
     }
 
     private function ConsumoWSDLValidarlc($linea_captura){
-
-
         $service=env("SERV_VALIDA_LC");
         $username=env("USER_SAP_VALIDA_LC");
         $password=env("PASSWORD_SAP_VALIDA_LC");
@@ -162,7 +149,6 @@ class ReferenciasController extends Controller
 
 
     public function Insertlc(Request $request ){
-        // dd($request->linea);
         $this-> ConsumoWSDLAltalc($request->linea, $request->rfc, $request->fecha_ven, $request->monto, $request->numero_ord);
         return view('layouts/busqueda', ['consultarLc' => [], 'datos_update' => []]);
          
@@ -211,7 +197,7 @@ $ff=substr($MONTO, 0, -3);
         if ($soapclient->fault) {
             return array("mensaje" => "Error al consumir servicio");
         }
-        // return response()->json( $result,200);;
+    
         return $result;
 
         }catch(Exception $e){
@@ -221,36 +207,23 @@ $ff=substr($MONTO, 0, -3);
 
     
     public function update(Request $request){
-    //   dd($request);
      $FORMA_PAGO = $request['FORMA_PAGO']; $RFC = $request['RFC']; $METODO_PAGO = $request['METODO_PAGO'];
      $NUMERO_OPERACION = $request['NUMERO_OPERACION']; $MONTO_PAGADO = substr($request['MONTO_PAGADO'], 0, -3); ;
      $FECHA_PAGO = $request['FECHA_PAGO']; $NUMERO_ORDEN = $request['NUMERO_ORDEN']; $ESTADO = $request['ESTADO']; $BANCO= $request['BANCO'] ;$CONVENIO= $request['CONVENIO']; 
     
-    $date=date_create( $FECHA_PAGO);
-    $FECHA_PAGO = date_format($date,"Y-m-d H:i:s");
-  
-    //  dd($ESTADO, $FORMA_PAGO, $METODO_PAGO, $NUMERO_OPERACION, $RFC, $BANCO, $CONVENIO, $MONTO_PAGADO, $FECHA_PAGO, $NUMERO_ORDEN);
+        $date=date_create( $FECHA_PAGO);
+        $FECHA_PAGO = date_format($date,"Y-m-d H:i:s");
 
       $UPDATE =  \DB::connection('mysqlbanc2')->update(' update pagos set pagos.estado= ? , pagos.id_forma_pago= ? , pagos.metodo_pago= ? , pagos.numero_operacion= ? , pagos.rfc= ? ,  pagos.banco= ? , pagos.id_convenio = ? , pagos.monto_pagado= ? , pagos.fecha_pago= ?  where pagos.numero_orden =? ', [$ESTADO, $FORMA_PAGO, $METODO_PAGO, $NUMERO_OPERACION, $RFC, $BANCO, $CONVENIO, $MONTO_PAGADO, $FECHA_PAGO, $NUMERO_ORDEN ]);
 
-
-    // $UPDATE =   \DB::connection('mysqlbanc2')->update('update pagos set pagos.metodo_pago= ? where pagos.numero_orden = ?', [ "EUP" , 300080950408]);
-    // dd($UPDATE);
-   
-    // dd($UPDATE ) ;
-    Bitacora::create([
-        'id_usuario' =>  Auth::user()->id,
-        'linea_captura' =>  $NUMERO_ORDEN, 
-        'accion' =>  "UPDATE"
-    ]);
+            Bitacora::create([
+                'id_usuario' =>  Auth::user()->id,
+                'linea_captura' =>  $NUMERO_ORDEN, 
+                'accion' =>  "UPDATE"
+            ]);
 
     return view('layouts/busqueda', ['consultarLc' => [], 'datos_update' => []]);
 }
 
-
-// Private function getToday(){
-//     date_default_timezone_set("America/Mexico_City");
-//     return date("Y-m-d\TH:i:s");
-// }
 
 }
