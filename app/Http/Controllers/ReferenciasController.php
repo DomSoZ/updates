@@ -33,15 +33,16 @@ class ReferenciasController extends Controller
             // dd( $ConsultarLc);
           
               $result=  $this->ConsumoWSDLValidarlc($linea_captura);
-        //   dd($result['ES_ORDEN_PAGO']['LINEA_CAPTURA']);
+        //    dd($result);
             
-                
+                // validacion fea (acomodar)
+                if(empty($result['TB_MENSAJES'])){
 
-            //   if ( $result['ES_MSJ']['V1_MENS'] == 'No existe documento de compensación'){
+                 }else if ($result['TB_MENSAJES']['ID_MENS'] == "003"){
 
-            //     return view('layouts/busqueda', ['consultarLc' => [], 'resultados' => []]);
+                            return view('layouts/busqueda', ['consultarLc' => [], 'datos_update' => []]);
 
-            //   }
+                    }
                
 
                $resultdos=  $this->ConsumoWSDLConsultaRecibo($linea_captura,  $result['ES_ORDEN_PAGO']['IMPORTE']);
