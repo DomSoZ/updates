@@ -19,6 +19,7 @@ class ReferenciasController extends Controller
     
     
     public function index(Request $request){
+        // dd($request);
         $linea_captura = $request->input('lineacaptura') ?? 00;
         // dd($linea_captura);
         if ($linea_captura == null) {
@@ -48,35 +49,11 @@ class ReferenciasController extends Controller
                $resultdos=  $this->ConsumoWSDLConsultaRecibo($linea_captura,  $result['ES_ORDEN_PAGO']['IMPORTE']);
 
             //    $numero_resultdos = sizeof($resultdos);
-                // dd(  $resultdos);
+               //   dd( $resultdos);
+                 
 
-                 if(count( $resultdos['TB_ConsultaRecibo']) <= 5){
-                        if( $resultdos['TB_ConsultaRecibo']['ES_MENSAJES']['IdMens']== "006"){
-                            $estado = "I";
-                            $metodopago = "";
-                            $formapago = "" ;
-                            $monto_pagado ="";
-                            $FECHA_VENCE="";
-                            $inea_cap="";
-
-                            $datos_update= array(
-                                "FORMA_PAGO" => $formapago ,
-                                "RFC" => $result['ES_ORDEN_PAGO']['RFC'],
-                                "METODO_PAGO"=>$metodopago,
-                                "NUMERO_OPERACION"=> '00',
-                                "BANCO"=> '',
-                                "MONTO_PAGADO"=>$monto_pagado ,
-                                "FECHA_PAGO"=> '',
-                                "NUMERO_ORDEN"=> $linea_captura,
-                                "ESTADO"=> $estado,
-                                "FECHA_VENCE"=>$FECHA_VENCE,
-                                "LINEA_CAPTURA"=> $inea_cap
-                            );
-                            $Bancos=  \DB::connection('mysqlbanc2')->select("select id_banco, banco from  c_bancos cb  ;");
-                $convenios=  \DB::connection('mysqlbanc2')->select("  select id_convenio, cuenta_contable , via_pago   from  c_convenios cc ; ");
-
-            return view('layouts/busqueda', ['consultarLc' => $ConsultarLc, 'datos_update' => $datos_update,'bancos' =>$Bancos, 'convenios' => $convenios]);
-       }
+     if(count( $resultdos['TB_ConsultaRecibo']) <= 5 && count( $resultdos['TB_ConsultaRecibo']) > 1 ) {
+                        
                     $paraif= $resultdos['TB_ConsultaRecibo'][0]['ES_MENSAJES']['TpMens'];
                     $estado = "P";
                     $FECHA_VENCE= date("Y-m-d", strtotime($result['ES_ORDEN_PAGO']['FECHA_VENCIMIENTO']));
@@ -84,13 +61,14 @@ class ReferenciasController extends Controller
                     $metodopago = $resultdos['TB_ConsultaRecibo'][0]['MetodoPago'] ?? 00;
                     $formapago = $resultdos['TB_ConsultaRecibo'][0]['FormaPago'] ;
                     $monto_pagado = $resultdos['TB_ConsultaRecibo'][0]['Total'] ?? 00;
-                 }else{
+
+    }else{
                      $paraif= $resultdos['TB_ConsultaRecibo']['ES_MENSAJES']['TpMens'] ;
                      $estado = "P";
                      $FECHA_VENCE= date("Y-m-d", strtotime($result['ES_ORDEN_PAGO']['FECHA_VENCIMIENTO']));
                      $inea_cap= $result['ES_ORDEN_PAGO']['LINEA_CAPTURA'];
                      $metodopago = $resultdos['TB_ConsultaRecibo']['MetodoPago'] ?? 00;
-                     $formapago = $resultdos['TB_ConsultaRecibo']['FormaPago'] ;
+                     $formapago = $resultdos['TB_ConsultaRecibo']['FormaPago'] ?? 00 ;
                      $monto_pagado = $resultdos['TB_ConsultaRecibo']['Total'] ?? 00;
                  }
             
@@ -118,6 +96,9 @@ class ReferenciasController extends Controller
                     "FECHA_VENCE"=>$FECHA_VENCE,
                     "LINEA_CAPTURA"=> $inea_cap
                 );
+
+
+
 
                 $Bancos=  \DB::connection('mysqlbanc2')->select("select id_banco, banco from  c_bancos cb  ;");
                 $convenios=  \DB::connection('mysqlbanc2')->select("  select id_convenio, cuenta_contable , via_pago   from  c_convenios cc ; ");
