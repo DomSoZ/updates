@@ -49,13 +49,15 @@ class ReferenciasController extends Controller
                $resultdos=  $this->ConsumoWSDLConsultaRecibo($linea_captura,  $result['ES_ORDEN_PAGO']['IMPORTE']);
 
             //    $numero_resultdos = sizeof($resultdos);
-            //    dd( $resultdos,  $result, count( $result['TB_CONV_BANCARIOS']));
+          //  dd( $resultdos,  $result, count( $result['TB_CONV_BANCARIOS']));
                  
 
      if(count( $resultdos['TB_ConsultaRecibo']) <= 5 && count( $resultdos['TB_ConsultaRecibo']) > 1 ) {
                         if( count( $result['TB_CONV_BANCARIOS'] )  <= 3){
                             $banco= $result['TB_CONV_BANCARIOS']['DES_BANCO'];
-                            $convenio= $result['TB_CONV_BANCARIOS']['COD_CONVENIO'];
+                            $convenio=  $convenios=  \DB::connection('mysqlbanc2')->select("  SELECT id_convenio , impuesto ,cuenta_contable , via_pago  FROM c_convenios where convenio  = ? ; ", [$result['TB_CONV_BANCARIOS']['COD_CONVENIO']]);
+                                       
+                            $convenio=  $convenio[0];
                 }else{
 
                     $banco="";
@@ -71,8 +73,9 @@ class ReferenciasController extends Controller
 
     }else{
         if( count( $result['TB_CONV_BANCARIOS'] )  <= 3){
-                    $banco= $result['TB_CONV_BANCARIOS']['DES_BANCO'];
-                     $convenio= $result['TB_CONV_BANCARIOS']['COD_CONVENIO'];
+            $banco= $result['TB_CONV_BANCARIOS']['DES_BANCO'];
+            $convenio=  $convenios=  \DB::connection('mysqlbanc2')->select("  SELECT id_convenio , impuesto ,cuenta_contable , via_pago  FROM c_convenios where convenio  = ? ; ", [$result['TB_CONV_BANCARIOS']['COD_CONVENIO']]);
+            $convenio=  $convenio[0];  
         }else{
 
             $banco="";
@@ -118,9 +121,9 @@ class ReferenciasController extends Controller
                 );
 
 
-// dd($datos_update);
+//  dd($datos_update);
 
-                $Bancos=  \DB::connection('mysqlbanc2')->select("select id_banco, banco from  c_bancos cb  ;");
+                // $Bancos=  \DB::connection('mysqlbanc2')->select("select id_banco, banco from  c_bancos cb  ;");
                 $convenios=  \DB::connection('mysqlbanc2')->select("  select id_convenio, cuenta_contable , via_pago   from  c_convenios cc ; ");
             // dd($result['MONTO']);
 
