@@ -49,20 +49,11 @@ class ReferenciasController extends Controller
                $resultdos=  $this->ConsumoWSDLConsultaRecibo($linea_captura,  $result['ES_ORDEN_PAGO']['IMPORTE']);
 
             //    $numero_resultdos = sizeof($resultdos);
-          //  dd( $resultdos,  $result, count( $result['TB_CONV_BANCARIOS']));
+                //  dd( $resultdos['TB_ConsultaRecibo']);
                  
 
      if(count( $resultdos['TB_ConsultaRecibo']) <= 5 && count( $resultdos['TB_ConsultaRecibo']) > 1 ) {
-                        if( count( $result['TB_CONV_BANCARIOS'] )  <= 3){
-                            $banco= $result['TB_CONV_BANCARIOS']['DES_BANCO'];
-                            $convenio=  $convenios=  \DB::connection('mysqlbanc2')->select("  SELECT id_convenio , impuesto ,cuenta_contable , via_pago  FROM c_convenios where convenio  = ? ; ", [$result['TB_CONV_BANCARIOS']['COD_CONVENIO']]);
-                                       
-                            $convenio=  $convenio[0];
-                }else{
-
-                    $banco="";
-                    $convenio= "";
-                }
+                        
                     $paraif= $resultdos['TB_ConsultaRecibo'][0]['ES_MENSAJES']['TpMens'];
                     $estado = "P";
                     $FECHA_VENCE= date("Y-m-d", strtotime($result['ES_ORDEN_PAGO']['FECHA_VENCIMIENTO']));
@@ -72,17 +63,7 @@ class ReferenciasController extends Controller
                     $monto_pagado = $resultdos['TB_ConsultaRecibo'][0]['Total'] ?? 00;
 
     }else{
-        if( count( $result['TB_CONV_BANCARIOS'] )  <= 3){
-            $banco= $result['TB_CONV_BANCARIOS']['DES_BANCO'];
-            $convenio=  $convenios=  \DB::connection('mysqlbanc2')->select("  SELECT id_convenio , impuesto ,cuenta_contable , via_pago  FROM c_convenios where convenio  = ? ; ", [$result['TB_CONV_BANCARIOS']['COD_CONVENIO']]);
-            $convenio=  $convenio[0];  
-        }else{
-
-            $banco="";
-            $convenio= "";
-        }
                      $paraif= $resultdos['TB_ConsultaRecibo']['ES_MENSAJES']['TpMens'] ;
-                  
                      $estado = "P";
                      $FECHA_VENCE= date("Y-m-d", strtotime($result['ES_ORDEN_PAGO']['FECHA_VENCIMIENTO']));
                      $inea_cap= $result['ES_ORDEN_PAGO']['LINEA_CAPTURA'];
@@ -99,9 +80,6 @@ class ReferenciasController extends Controller
                     $monto_pagado ="";
                     $FECHA_VENCE="";
                     $inea_cap="";
-                    $banco="";
-                    $convenio="";
-                    
     
                 }
 
@@ -110,8 +88,7 @@ class ReferenciasController extends Controller
                     "RFC" => $result['ES_ORDEN_PAGO']['RFC'],
                     "METODO_PAGO"=>$metodopago,
                     "NUMERO_OPERACION"=> '00',
-                    "BANCO"=> $banco,
-                    "CONVENIO"=> $convenio,
+                    "BANCO"=> '',
                     "MONTO_PAGADO"=>$monto_pagado ,
                     "FECHA_PAGO"=> '',
                     "NUMERO_ORDEN"=> $linea_captura,
@@ -121,9 +98,8 @@ class ReferenciasController extends Controller
                 );
 
 
-//  dd($datos_update);
 
-                // $Bancos=  \DB::connection('mysqlbanc2')->select("select id_banco, banco from  c_bancos cb  ;");
+                $Bancos=  \DB::connection('mysqlbanc2')->select("select id_banco, banco from  c_bancos cb  ;");
                 $convenios=  \DB::connection('mysqlbanc2')->select("  select id_convenio, cuenta_contable , via_pago   from  c_convenios cc ; ");
             // dd($result['MONTO']);
 
