@@ -14,11 +14,10 @@ use App\Http\Controllers\ReferenciasController;
 |
 */
 
-Route::get('/', [ReferenciasController::class, 'index'])->name('busqueda');
-
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [ReferenciasController::class, 'index'])->name('busqueda');
 Route::get('/buscarlc', [ReferenciasController::class, 'buscarlc'])->name('buscarlc');
 Route::post('/update', [ReferenciasController::class, 'update'])->name('update');
 Route::post('/insert', [ReferenciasController::class, 'Insertlc'])->name('insert');
+Route::get('/tabla_bancos', [ReferenciasController::class, 'bancos'])->name('bancos');

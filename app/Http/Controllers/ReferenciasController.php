@@ -100,10 +100,10 @@ class ReferenciasController extends Controller
 
 
                 $Bancos=  \DB::connection('mysqlbanc2')->select("select id_banco, banco from  c_bancos cb  ;");
-                $convenios=  \DB::connection('mysqlbanc2')->select("  select id_convenio, cuenta_contable , via_pago   from  c_convenios cc ; ");
+                $convenios=  \DB::connection('mysqlbanc2')->select("  select id_convenio, convenio, cuenta_contable , via_pago   from  c_convenios cc ; ");
             // dd($result['MONTO']);
 
-            return view('layouts/busqueda', ['consultarLc' => $ConsultarLc, 'datos_update' => $datos_update,'bancos' =>$Bancos, 'convenios' => $convenios]);
+            return view('layouts/busqueda',['consultarLc' => $ConsultarLc, 'datos_update' => $datos_update,'bancos' =>$Bancos, 'convenios' => $convenios]);
         }
     }
 
@@ -187,6 +187,7 @@ $ff=substr($MONTO, 0, -3);
 
     
     public function update(Request $request){
+        dd($request);
      $FORMA_PAGO = $request['FORMA_PAGO']; $RFC = $request['RFC']; $METODO_PAGO = $request['METODO_PAGO'];
      $NUMERO_OPERACION = $request['NUMERO_OPERACION']; $MONTO_PAGADO = substr($request['MONTO_PAGADO'], 0, -3); ;
      $FECHA_PAGO = $request['FECHA_PAGO']; $NUMERO_ORDEN = $request['NUMERO_ORDEN']; $ESTADO = $request['ESTADO']; $BANCO= $request['BANCO'] ;$CONVENIO= $request['CONVENIO']; 
@@ -205,5 +206,9 @@ $ff=substr($MONTO, 0, -3);
     return view('layouts/busqueda', ['consultarLc' => [], 'datos_update' => []]);
 }
 
+    public function bancos(Request $request){
+        $bancos = \DB::connection('mysqlbanc2')->select("select c.id_convenio, c.impuesto, c.clave_impuesto, c.convenio, cb.banco, c.via_pago, c.cuenta_contable from c_convenios c join c_bancos cb on cb.id_banco=c.id_banco ;");
+        return view('layouts/bancos', ['bancos' => $bancos]);
+    }
 
 }
