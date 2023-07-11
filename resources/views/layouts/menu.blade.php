@@ -36,8 +36,13 @@
     </div>
     <div class="offcanvas-body">
         <div class="menu_item"><a href=" {{ route('busqueda') }}" class="nav-link">
-                <i class="fas fa-chart-bar" style="font-size: 23px;"></i>
-                Dashboard
+                <i class="fas fa-search" style="font-size: 23px;"></i>
+                Busqueda
+            </a>
+        </div>
+        <div class="menu_item"><a href=" {{ route('bancos') }}" class="nav-link">
+                <i class="fas fa-table" style="font-size: 23px;"></i>
+                Bancos y Convenios
             </a>
         </div>
     </div>
