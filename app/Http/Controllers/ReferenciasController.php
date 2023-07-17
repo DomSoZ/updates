@@ -129,7 +129,12 @@ class ReferenciasController extends Controller
 
 
     public function Insertlc(Request $request ){
-        $this-> ConsumoWSDLAltalc($request->linea, $request->rfc, $request->fecha_ven, $request->monto, $request->numero_ord);
+// dd($request);
+    
+     $this-> ConsumoWSDLAltalc($request->linea, $request->rfc, $request->fecha_ven, $request->monto, $request->numero_ord);
+     //   $engomado= "";
+    //   $vr?  $this->altalinea($request->linea ,$request->rfc,  $request->numero_ord, $request->monto, $engomado,$request->fecha_ven);
+
         return view('layouts/busqueda', ['consultarLc' => [], 'datos_update' => []]);
          
      }
@@ -137,7 +142,9 @@ class ReferenciasController extends Controller
 
     private function ConsumoWSDLAltalc($linea_captura, $RFC, $FECHA_VENCE, $MONTO, $NUMERO_ORDEN ){
 $ff=substr($MONTO, 0, -3);
-// dd($ff);
+
+
+//  dd($ff, $linea_captura, $RFC, $FECHA_VENCE, $NUMERO_ORDEN);
     $service=env("SERV_ALTA");
     $username=env("USER_SAP_ALTA");
     $password=env("PASSWORD_SAP_ALTA");
@@ -157,8 +164,9 @@ $ff=substr($MONTO, 0, -3);
     $funcion= "alta";
     // dd($parametros,   $datos_entrada);
     
-      $result = $this->soap_client($service,$username,$password,$funcion, $parametros);
-    dd( $result );
+      $result = $this->soap_client($service,$username,$password,$funcion, $datos_entrada);
+      
+     dd( $result );
     }
 
     private function soap_client($service,$username,$password,$funcion,$parametros)
@@ -166,10 +174,14 @@ $ff=substr($MONTO, 0, -3);
     try {
         $soapclient = new \nusoap_client($service, true);
         $soapclient->setCredentials($username, $password, 'basic');
+        
         $soapclient->decode_utf8 = false;
         $soapclient->timeout = 10;
         $soapclient->response_timeout = 10;
+        //  dd($funcion, $parametros);
         $result = $soapclient->call($funcion, $parametros);
+        
+      
         if ($sError = $soapclient->getError()) {
           return response()->json(array("mensaje" => "Error al consumir servicio".$sError), 500);
           
@@ -187,11 +199,11 @@ $ff=substr($MONTO, 0, -3);
 
     
     public function update(Request $request){
-        dd($request);
+    //dd($request);
      $FORMA_PAGO = $request['FORMA_PAGO']; $RFC = $request['RFC']; $METODO_PAGO = $request['METODO_PAGO'];
      $NUMERO_OPERACION = $request['NUMERO_OPERACION']; $MONTO_PAGADO = substr($request['MONTO_PAGADO'], 0, -3); ;
-     $FECHA_PAGO = $request['FECHA_PAGO']; $NUMERO_ORDEN = $request['NUMERO_ORDEN']; $ESTADO = $request['ESTADO']; $BANCO= $request['BANCO'] ;$CONVENIO= $request['CONVENIO']; 
-    
+     $FECHA_PAGO = $request['FECHA_PAGO']; $NUMERO_ORDEN = $request['NUMERO_ORDEN']; $ESTADO = $request['ESTADO']; $BANCO= $request['BANCO'] ;$CONVENIO= $request['convenio']; 
+    // dd([$ESTADO, $FORMA_PAGO, $METODO_PAGO, $NUMERO_OPERACION, $RFC, $BANCO, $CONVENIO, $MONTO_PAGADO, $FECHA_PAGO, $NUMERO_ORDEN ]);
         $date=date_create( $FECHA_PAGO);
         $FECHA_PAGO = date_format($date,"Y-m-d H:i:s");
 
@@ -210,5 +222,8 @@ $ff=substr($MONTO, 0, -3);
         $bancos = \DB::connection('mysqlbanc2')->select("select c.id_convenio, c.impuesto, c.clave_impuesto, c.convenio, cb.banco, c.via_pago, c.cuenta_contable from c_convenios c join c_bancos cb on cb.id_banco=c.id_banco ;");
         return view('layouts/bancos', ['bancos' => $bancos]);
     }
+
+
+
 
 }

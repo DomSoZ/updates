@@ -34,7 +34,7 @@
                 <td>{{$datos_update['MONTO_PAGADO']}}</td>
                 <td>{{$datos_update['FECHA_PAGO']}}</td>
                 <td>{{$datos_update['ESTADO']}}</td>
-                <td>{{$datos_update['METODO_PAGO']}}</td>
+                <td>{{$datos_update['FORMA_PAGO']}}</td>
                 <td>{{$datos_update['BANCO']}}</td>
             </tr>
             @endif
