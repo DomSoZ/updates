@@ -129,9 +129,15 @@ class ReferenciasController extends Controller
 
 
     public function Insertlc(Request $request ){
-// dd($request);
+ dd($request);
     
-     $this-> ConsumoWSDLAltalc($request->linea, $request->rfc, $request->fecha_ven, $request->monto, $request->numero_ord);
+    //  $this-> ConsumoWSDLAltalc($request->linea, $request->rfc, $request->fecha_ven, $request->monto, $request->numero_ord);
+
+     // Insert directo.
+      $Insert =  \DB::connection('mysqlbanc2')->insert(" insert into pagos (linea_captura, numero_orden, rfc, fecha_intento, fecha_vence, estado, monto, activo, fecha_registro) 
+    VALUES (?, ?, ?, now(), ?, 'I', ?, 1, now()); ", [$request->linea, $request->numero_ord, $request->rfc, $request->fecha_ven, $request->monto ]);
+
+       
      //   $engomado= "";
     //   $vr?  $this->altalinea($request->linea ,$request->rfc,  $request->numero_ord, $request->monto, $engomado,$request->fecha_ven);
 
@@ -155,17 +161,16 @@ $ff=substr($MONTO, 0, -3);
         "rfc"=>$RFC,
         "fechaVencimiento"=>$FECHA_VENCE,
         "monto"=>$ff,
-        "numeroOrden"=>$NUMERO_ORDEN,
-        "engomado"=> " "
+        "numeroOrden"=>$NUMERO_ORDEN
     ));
     
-     $parametros=array(["referencia"=> $linea_captura, "rfc"=> $RFC  , "fechaVencimiento"=> $FECHA_VENCE , "monto"=> $ff, "numeroOrden"=> $NUMERO_ORDEN, "engomado"=> " " ]);
+     $parametros=array(["referencia"=> $linea_captura, "rfc"=> $RFC  , "fechaVencimiento"=> $FECHA_VENCE , "monto"=> $ff, "numeroOrden"=> $NUMERO_ORDEN ]);
 
     $funcion= "alta";
     // dd($parametros,   $datos_entrada);
     
       $result = $this->soap_client($service,$username,$password,$funcion, $datos_entrada);
-      
+
      dd( $result );
     }
 
