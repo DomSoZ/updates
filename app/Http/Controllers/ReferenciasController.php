@@ -129,7 +129,7 @@ class ReferenciasController extends Controller
 
 
     public function Insertlc(Request $request ){
- dd($request);
+//  dd($request);
     
     //  $this-> ConsumoWSDLAltalc($request->linea, $request->rfc, $request->fecha_ven, $request->monto, $request->numero_ord);
 
