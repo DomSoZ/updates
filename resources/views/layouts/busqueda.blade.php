@@ -53,7 +53,7 @@
     </table>
 </div>
 @if($consultarLc)
-    @if($consultarLc[0]->estado != 'P')
+    @if($consultarLc[0]->estado != 'P' && $datos_update['ESTADO'] = 'P')
         <button class="pill mx-auto mt-1" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button>
     @endif
 @else
